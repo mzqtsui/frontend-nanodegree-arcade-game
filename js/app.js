@@ -3,14 +3,14 @@ const LIMITS = {
     y: 605
 };
 
-const DRAW_HITBOXES = true;
+const DRAW_HITBOXES = false;
 const MAX_ENEMIES = 4;
 const TILE_HEIGHT = 83;
 const TILE_WIDTH = 101;
 const GEMS = [
-    {type: 'green', sprite: 'images/gem-green.png', value: '10'},
-    {type: 'blue', sprite: 'images/gem-blue.png', value: '50'},
-    {type: 'orange', sprite: 'images/gem-orange.png', value: '100'},
+    {type: 'green', sprite: 'images/gem-green.png', value: 10},
+    {type: 'blue', sprite: 'images/gem-blue.png', value: 50},
+    {type: 'orange', sprite: 'images/gem-orange.png', value: 100},
 ];
 
 // General Renderable class for common methods on an item drawn on the canvas
@@ -20,6 +20,7 @@ class Renderable {
         this.y = y;
         this.sprite = sprite;
         this.hitbox = hitbox; //[XOffset, YOffset, Width, Height]
+        this.collisions = true;
     }
 
     // Draw the enemy on the screen, required method for game
@@ -32,6 +33,9 @@ class Renderable {
 
     // Does this object collide with the player?
     checkPlayerCollision(p) {
+        if(!this.collisions)
+            return;
+
         var leftA = this.hitbox[0] + this.x;
         var rightA = leftA + this.hitbox[2];
         var leftB = p.hitbox[0] + p.x;
@@ -45,6 +49,7 @@ class Renderable {
             && rightA > leftB
             && topA < bottomB
             && bottomA > topB);
+    }
 }
 
 
@@ -131,10 +136,19 @@ class Gem extends Renderable {
     constructor(x, y, gem) {
         super(x, y, gem.sprite, [18, 52, 66,75]);
         this.value = gem.value;
+        this.collected = false;
     }
 
     update() {
-        super.checkPlayerCollision(player);
+        if(this.collected) {
+            this.y -= 5;
+        }
+        if (super.checkPlayerCollision(player)) {
+            hud.addScore(this.value);
+            this.collisions = false;
+            this.collected = true;
+            setTimeout(spawnGem, 100);
+        }
     }
 }
 
@@ -142,6 +156,10 @@ class HUD {
     constructor() {
 
         this.score = 0;
+    }
+
+    addScore(val) {
+        this.score += val;
     }
 
     update() {

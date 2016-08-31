@@ -85,6 +85,7 @@ var Engine = (function(global) {
      * on the entities themselves within your app.js file).
      */
     function update(dt) {
+        canvas.width = canvas.width;
         updateEntities(dt);
         // checkCollisions();
     }
