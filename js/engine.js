@@ -19,14 +19,20 @@ var Engine = (function(global) {
      * create the canvas element, grab the 2D context for that canvas
      * set the canvas elements height/width and add it to the DOM.
      */
+
+    const LIMITS = {
+        x: 505,
+        y: 605
+    };
+
     var doc = global.document,
         win = global.window,
         canvas = doc.createElement('canvas'),
         ctx = canvas.getContext('2d'),
         lastTime;
 
-    canvas.width = 505;
-    canvas.height = 606;
+    canvas.width = LIMITS.x;
+    canvas.height = LIMITS.y;
     doc.body.appendChild(canvas);
 
     /* This function serves as the kickoff point for the game loop itself
@@ -92,7 +98,8 @@ var Engine = (function(global) {
      */
     function updateEntities(dt) {
         allEnemies.forEach(function(enemy) {
-            enemy.update(dt);
+            if(enemy.update(dt) > LIMITS.x)
+                enemy.reset();
         });
         player.update();
     }
