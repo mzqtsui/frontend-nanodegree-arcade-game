@@ -1,3 +1,5 @@
+// Constants and game state variables
+
 const LIMITS = {
     x: 505,
     y: 605
@@ -166,6 +168,7 @@ class HUD {
     constructor() {
 
         this.score = 0;
+        //WIP: Health
     }
 
     addScore(val) {
