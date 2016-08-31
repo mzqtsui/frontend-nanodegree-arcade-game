@@ -1,3 +1,8 @@
+const LIMITS = {
+    x: 505,
+    y: 605
+};
+
 const MAX_ENEMIES = 4;
 const TILE_HEIGHT = 83;
 const TILE_WIDTH = 101;
@@ -71,16 +76,28 @@ class Player extends Renderable {
         switch(dir) {
             case 'left':
                 this.x -= this.speed.x;
+                if(this.x < 0)
+                    this.x = 0;
                 break;
+
             case 'up':
                 this.y -= this.speed.y;
+                if(this.y < -10)
+                    this.y = -10;
                 break;
+
             case 'right':
                 this.x += this.speed.x;
+                if(this.x > LIMITS.x - TILE_WIDTH)
+                    this.x = LIMITS.x - TILE_WIDTH;
                 break;
+
             case 'down':
                 this.y += this.speed.y;
+                if(this.y > LIMITS.y - 200)
+                    this.y = LIMITS.y - 200;
                 break;
+
             default:
                 console.error('Player handleInput received invalid input', dir);
                 break;
@@ -111,11 +128,12 @@ class HUD {
     }
 
     render() {
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0,0, 101,40);
+        ctx.fillStyle = 'black';
         ctx.font = '20pt sans-serif';
         ctx.fillText(pad(this.score,6), 2,40);
     }
-
-
 }
 
 function pad(num, size) {

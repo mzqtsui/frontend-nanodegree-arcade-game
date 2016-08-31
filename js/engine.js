@@ -20,10 +20,7 @@ var Engine = (function(global) {
      * set the canvas elements height/width and add it to the DOM.
      */
 
-    const LIMITS = {
-        x: 505,
-        y: 605
-    };
+
 
     var doc = global.document,
         win = global.window,
@@ -158,10 +155,11 @@ var Engine = (function(global) {
         /* Loop through all of the objects within the allEnemies array and call
          * the render function you have defined.
          */
+        gem.render();
         allEnemies.forEach(function(enemy) {
             enemy.render();
         });
-        gem.render();
+
         player.render();
         hud.render();
 
