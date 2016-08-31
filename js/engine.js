@@ -101,7 +101,9 @@ var Engine = (function(global) {
             if(enemy.update(dt) > LIMITS.x)
                 enemy.reset();
         });
+
         player.update();
+        gem.update();
         hud.update();
     }
 

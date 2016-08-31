@@ -31,9 +31,20 @@ class Renderable {
     }
 
     // Does this object collide with the player?
-    checkPlayerCollision() {
+    checkPlayerCollision(p) {
+        var leftA = this.hitbox[0] + this.x;
+        var rightA = leftA + this.hitbox[2];
+        var leftB = p.hitbox[0] + p.x;
+        var rightB = leftB + p.hitbox[2];
+        var topA = this.hitbox[1] + this.y;
+        var bottomA = topA + this.hitbox[3];
+        var topB = p.hitbox[1] + p.y;
+        var bottomB = topB + p.hitbox[3];
 
-    }
+        return (leftA < rightB
+            && rightA > leftB
+            && topA < bottomB
+            && bottomA > topB);
 }
 
 
@@ -57,7 +68,7 @@ class Enemy extends Renderable {
         // which will ensure the game runs at the same speed for
         // all computers.
         this.x += dt*this.speed;
-
+        super.checkPlayerCollision(player);
         return this.x;
     };
 
@@ -123,7 +134,7 @@ class Gem extends Renderable {
     }
 
     update() {
-
+        super.checkPlayerCollision(player);
     }
 }
 
