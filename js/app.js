@@ -7,17 +7,30 @@ const GEMS = [
     {type: 'orange', sprite: 'images/gem-orange.png', value: '100'},
 ];
 
+// General Renderable class for common methods on an item drawn on the canvas
+class Renderable {
+    constructor(x, y, sprite) {
+        this.x = x;
+        this.y = y;
+        this.sprite = sprite;
+    }
+
+    // Draw the enemy on the screen, required method for game
+    render() {
+        ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    }
+}
+
+
 // Enemies our player must avoid
-class Enemy {
+class Enemy extends Renderable {
     constructor(x, y, speed) {
         // Variables applied to each of our instances go here,
         // we've provided one for you to get started
 
         // The image/sprite for our enemies, this uses
         // a helper we've provided to easily load images
-        this.sprite = 'images/enemy-bug.png';
-        this.x = x;
-        this.y = y;
+        super(x, y, 'images/enemy-bug.png');
         this.speed = speed;
         //WIP: "glitch" filter, use negative
     };
@@ -33,11 +46,6 @@ class Enemy {
         return this.x;
     };
 
-    // Draw the enemy on the screen, required method for game
-    render() {
-        ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-    };
-
     reset() {
         this.x = -100;
     }
@@ -46,11 +54,9 @@ class Enemy {
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
-class Player {
+class Player extends Renderable {
     constructor(x, y, sprite) {
-        this.x = x;
-        this.y = y;
-        this.sprite = sprite;
+        super(x, y, sprite);
         this.speed = {
             x: 101,
             y: 83
@@ -59,10 +65,6 @@ class Player {
 
     update() {
 
-    }
-
-    render() {
-        ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
     }
 
     handleInput(dir) {
@@ -87,20 +89,14 @@ class Player {
 }
 
 
-class Gem {
+class Gem extends Renderable {
     constructor(x, y, gem) {
-        this.x = x;
-        this.y = y;
+        super(x, y, gem.sprite);
         this.value = gem.value;
-        this.sprite = gem.sprite;
     }
 
     update() {
 
-    }
-
-    render() {
-        ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
     }
 }
 
@@ -129,20 +125,16 @@ function pad(num, size) {
 
 
 // Now instantiate your objects.
-// Place all enemy objects in an array called allEnemies
-var allEnemies = [];
-// Place the player object in a variable called player
-var player;
-// Enemy spawn interval
-var enemySpawner;
-var hud = new HUD();
-var gem;
+var allEnemies = [],
+    player,
+    enemySpawner,
+    hud,
+    gem;
 
 function spawnPlayer() {
     player = new Player(202,405,'images/char-boy.png');
 }
 
-// Spawn up to MAX_ENEMIES number of enemies
 function spawnEnemy() {
     if(allEnemies.length >= MAX_ENEMIES)
         clearInterval(enemySpawner);
@@ -156,7 +148,7 @@ function spawnEnemy() {
 
 function spawnGem() {
     gem = new Gem(
-        Math.floor(Math.random()*7)*TILE_WIDTH,
+        Math.floor(Math.random()*5)*TILE_WIDTH,
         Math.floor(Math.random()*6)*TILE_HEIGHT,
         GEMS[Math.floor(Math.random()*3)]);
 }
@@ -165,6 +157,7 @@ function startGame() {
     spawnPlayer();
     enemySpawner = setInterval(spawnEnemy,1400);
     spawnGem();
+    hud = new HUD();
 }
 
 
