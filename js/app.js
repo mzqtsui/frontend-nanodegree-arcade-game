@@ -3,6 +3,7 @@ const LIMITS = {
     y: 605
 };
 
+const DRAW_HITBOXES = true;
 const MAX_ENEMIES = 4;
 const TILE_HEIGHT = 83;
 const TILE_WIDTH = 101;
@@ -14,15 +15,24 @@ const GEMS = [
 
 // General Renderable class for common methods on an item drawn on the canvas
 class Renderable {
-    constructor(x, y, sprite) {
+    constructor(x, y, sprite, hitbox) {
         this.x = x;
         this.y = y;
         this.sprite = sprite;
+        this.hitbox = hitbox; //[XOffset, YOffset, Width, Height]
     }
 
     // Draw the enemy on the screen, required method for game
     render() {
+        if(DRAW_HITBOXES)
+            ctx.strokeRect(this.hitbox[0]+this.x, this.hitbox[1]+this.y, this.hitbox[2], this.hitbox[3]);
+
         ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    }
+
+    // Does this object collide with the player?
+    checkPlayerCollision() {
+
     }
 }
 
@@ -35,7 +45,7 @@ class Enemy extends Renderable {
 
         // The image/sprite for our enemies, this uses
         // a helper we've provided to easily load images
-        super(x, y, 'images/enemy-bug.png');
+        super(x, y, 'images/enemy-bug.png', [0, 80, 95,60]);
         this.speed = speed;
         //WIP: "glitch" filter, use negative
     };
@@ -61,7 +71,7 @@ class Enemy extends Renderable {
 // a handleInput() method.
 class Player extends Renderable {
     constructor(x, y, sprite) {
-        super(x, y, sprite);
+        super(x, y, sprite, [20, 65, 62,70]);
         this.speed = {
             x: 101,
             y: 83
@@ -108,7 +118,7 @@ class Player extends Renderable {
 
 class Gem extends Renderable {
     constructor(x, y, gem) {
-        super(x, y, gem.sprite);
+        super(x, y, gem.sprite, [18, 52, 66,75]);
         this.value = gem.value;
     }
 
