@@ -63,6 +63,9 @@ var Engine = (function(global) {
          * function again as soon as the browser is able to draw another frame.
          */
         win.requestAnimationFrame(main);
+
+
+
     }
 
     /* This function does some initial setup that should only occur once,
@@ -102,6 +105,7 @@ var Engine = (function(global) {
                 enemy.reset();
         });
         player.update();
+        hud.update();
     }
 
     /* This function initially draws the "game level", it will then call
@@ -157,8 +161,10 @@ var Engine = (function(global) {
         allEnemies.forEach(function(enemy) {
             enemy.render();
         });
-
+        gem.render();
         player.render();
+        hud.render();
+
     }
 
     /* This function does nothing but it could have been a good place to
@@ -177,6 +183,9 @@ var Engine = (function(global) {
         'images/stone-block.png',
         'images/water-block.png',
         'images/grass-block.png',
+        'images/gem-green.png',
+        'images/gem-blue.png',
+        'images/gem-orange.png',
         'images/enemy-bug.png',
         'images/char-boy.png'
     ]);
