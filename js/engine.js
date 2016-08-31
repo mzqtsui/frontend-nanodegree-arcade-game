@@ -48,8 +48,15 @@ var Engine = (function(global) {
         /* Call our update/render functions, pass along the time delta to
          * our update function since it may be used for smooth animation.
          */
-        update(dt);
-        render();
+
+        if(state === 'playing'){
+            update(dt);
+            render();
+
+        }
+        else if(state === 'choose'){
+            selector.render();
+        }
 
         /* Set our lastTime variable which is used to determine the time delta
          * for the next time this function is called.
@@ -72,8 +79,11 @@ var Engine = (function(global) {
     function init() {
         reset();
         lastTime = Date.now();
+        state = 'choose';
+        selector = new Selector(202, 120, 'images/Selector.png');
         main();
     }
+
 
     /* This function is called by main (our game loop) and itself calls all
      * of the functions which may need to update entity's data. Based on how
@@ -188,7 +198,12 @@ var Engine = (function(global) {
         'images/gem-blue.png',
         'images/gem-orange.png',
         'images/enemy-bug.png',
-        'images/char-boy.png'
+        'images/char-boy.png',
+        'images/char-princess-girl.png',
+        'images/char-cat-girl.png',
+        'images/char-horn-girl.png',
+        'images/char-pink-girl.png',
+        'images/Selector.png'
     ]);
     Resources.onReady(init);
 

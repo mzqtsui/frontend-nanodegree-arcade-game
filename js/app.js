@@ -13,6 +13,16 @@ const GEMS = [
     {type: 'orange', sprite: 'images/gem-orange.png', value: 100},
 ];
 
+const PLAYER_SPRITES = [
+    'images/char-boy.png',
+    'images/char-pink-girl.png',
+    'images/char-princess-girl.png',
+    'images/char-cat-girl.png',
+    'images/char-horn-girl.png'
+];
+
+var state; // 'choose', 'playing'
+
 // General Renderable class for common methods on an item drawn on the canvas
 class Renderable {
     constructor(x, y, sprite, hitbox) {
@@ -186,10 +196,11 @@ var allEnemies = [],
     player,
     enemySpawner,
     hud,
-    gem;
+    gem,
+    selector;
 
-function spawnPlayer() {
-    player = new Player(202,405,'images/char-boy.png');
+function spawnPlayer(sprite) {
+    player = new Player(202,405,sprite);
 }
 
 function spawnEnemy() {
@@ -210,26 +221,82 @@ function spawnGem() {
         GEMS[Math.floor(Math.random()*3)]);
 }
 
-function startGame() {
-    spawnPlayer();
+function startGame(playerSprite) {
+    state = 'playing';
+    spawnPlayer(playerSprite);
     enemySpawner = setInterval(spawnEnemy,1400);
     spawnGem();
     hud = new HUD();
 }
 
 
-startGame();
+class Selector extends Renderable{
+    constructor(x, y, sprite) {
+        super(x, y, sprite, null);
+        this.chosen = 2;
+    }
 
+    render() {
+        ctx.canvas.width = ctx.canvas.width;
+        ctx.font ="28pt sans-serif";
+        ctx.textAlign ="center";
+        ctx.fillText("Choose your character", ctx.canvas.width/2,100);
+
+        super.render();
+
+        //render character sprites
+        for(var i = 0; i < 5; i++) {
+            ctx.drawImage(Resources.get(PLAYER_SPRITES[i]), i*101, 120);
+        }
+    }
+
+    handleInput(dir) {
+        switch(dir) {
+            case 'left':
+                this.chosen--;
+                this.x -= TILE_WIDTH;
+                if(this.chosen < 0){
+                    this.chosen = 0;
+                    this.x = 0;
+                }
+                break;
+
+            case 'right':
+                this.chosen++;
+                this.x += TILE_WIDTH;
+                if(this.chosen >= PLAYER_SPRITES.length){
+                    this.chosen = PLAYER_SPRITES.length - 1;
+                    this.x = LIMITS.x - TILE_WIDTH;
+                }
+                break;
+
+            case 'enter':
+                startGame(PLAYER_SPRITES[this.chosen]);
+                break;
+
+            default:
+                console.error('Selector handleInput received invalid input', dir);
+                break;
+        }
+    }
+
+}
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
 document.addEventListener('keyup', function(e) {
     var allowedKeys = {
+        13: 'enter',
         37: 'left',
         38: 'up',
         39: 'right',
         40: 'down'
     };
+    if(state === 'choose')
+        selector.handleInput(allowedKeys[e.keyCode]);
+    else if(state === 'playing')
+        player.handleInput(allowedKeys[e.keyCode]);
+    else
+        console.error('Unknown game state', state);
 
-    player.handleInput(allowedKeys[e.keyCode]);
 });
