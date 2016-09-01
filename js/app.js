@@ -10,19 +10,17 @@ const LIMITS = {
     y: 605
 };
 
-const NUM_ROWS = 6;
-const NUM_COLS = 5;
-const TILE_HEIGHT = 83;
-const TILE_WIDTH = 101;
+const   NUM_ROWS = 6,
+        NUM_COLS = 5,
+        TILE_HEIGHT = 83,
+        TILE_WIDTH = 101,
+        MAX_ENEMIES = 5,
+        MAX_HEALTH = 3;
 
 const PLAYER_SPAWN = {
     x: 202,
     y: 405
 };
-
-const MAX_ENEMIES = 5;
-
-const MAX_HEALTH = 3;
 
 const IMG_SRC = {
     BLOCK_STONE:    'images/stone-block.png',
@@ -82,7 +80,7 @@ var allEnemies = [],
 
 
 /**
-* CONSTANTS
+* CLASSES
 */
 
 /**
@@ -241,7 +239,13 @@ class Player extends Renderable {
     }
 }
 
-
+/**
+* @description Gem is a collection item that gives points
+* @constructor
+* @param {number} x - x coordinate of object
+* @param {number} y - y coordinate of object
+* @param {GEMS} gem - one of the GEMS array items
+*/
 class Gem extends Renderable {
     constructor(x, y, gem) {
         super(x, y, gem.sprite, [18, 52, 66,75]);
@@ -262,6 +266,10 @@ class Gem extends Renderable {
     }
 }
 
+/**
+* @description HUD to display in-game scores and health
+* @constructor
+*/
 class HUD {
     constructor() {
         this.score = 0;
@@ -306,6 +314,10 @@ class HUD {
     }
 }
 
+/**
+* @description Selector to choose character
+* @constructor
+*/
 class Selector extends Renderable{
     constructor() {
         super(202, 120, IMG_SRC.SELECTOR, null);
@@ -355,9 +367,7 @@ class Selector extends Renderable{
                 break;
         }
     }
-
 }
-
 
 function spawnGem() {
     gem = new Gem(
@@ -391,7 +401,6 @@ function startGame(playerSprite) {
 }
 
 
-
 /**
 * UTILITIES
 */
@@ -399,8 +408,6 @@ function pad(num, size) {
     var s = "000000000" + num;
     return s.substr(s.length-size);
 }
-
-
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
