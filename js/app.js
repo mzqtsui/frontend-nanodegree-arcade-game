@@ -9,21 +9,42 @@ const DRAW_HITBOXES = false;
 const MAX_ENEMIES = 4;
 const TILE_HEIGHT = 83;
 const TILE_WIDTH = 101;
+
+const IMG_SRC = {
+    BLOCK_STONE:    'images/stone-block.png',
+    BLOCK_WATER:    'images/water-block.png',
+    BLOCK_GRASS:    'images/grass-block.png',
+    GEM_GREEN:      'images/gem-green.png',
+    GEM_BLUE:       'images/gem-blue.png',
+    GEM_ORANGE:     'images/gem-orange.png',
+    ENEMY_BUG:      'images/enemy-bug.png',
+    CHAR_BOY:       'images/char-boy.png',
+    CHAR_PRINCESS:  'images/char-princess-girl.png',
+    CHAR_CAT_GIRL:  'images/char-cat-girl.png',
+    CHAR_HORN_GIRL: 'images/char-horn-girl.png',
+    CHAR_PINK_GIRL: 'images/char-pink-girl.png',
+    SELECTOR:       'images/Selector.png'
+};
+
 const GEMS = [
-    {type: 'green', sprite: 'images/gem-green.png', value: 10},
-    {type: 'blue', sprite: 'images/gem-blue.png', value: 50},
-    {type: 'orange', sprite: 'images/gem-orange.png', value: 100},
+    {sprite: IMG_SRC.GEM_GREEN, value: 10},
+    {sprite: IMG_SRC.GEM_BLUE, value: 50},
+    {sprite: IMG_SRC.GEM_ORANGE, value: 100},
 ];
 
 const PLAYER_SPRITES = [
-    'images/char-boy.png',
-    'images/char-pink-girl.png',
-    'images/char-princess-girl.png',
-    'images/char-cat-girl.png',
-    'images/char-horn-girl.png'
+    IMG_SRC.CHAR_BOY,
+    IMG_SRC.CHAR_PRINCESS,
+    IMG_SRC.CHAR_CAT_GIRL,
+    IMG_SRC.CHAR_HORN_GIRL,
+    IMG_SRC.CHAR_PINK_GIRL,
 ];
 
-var state; // 'choose', 'playing'
+const GAME_STATES = {
+    CHOOSING: 0,
+    PLAYING: 1
+};
+var currentState;
 
 // General Renderable class for common methods on an item drawn on the canvas
 class Renderable {
@@ -73,7 +94,7 @@ class Enemy extends Renderable {
 
         // The image/sprite for our enemies, this uses
         // a helper we've provided to easily load images
-        super(x, y, 'images/enemy-bug.png', [0, 80, 95,60]);
+        super(x, y, IMG_SRC.ENEMY_BUG, [0, 80, 95,60]);
         this.speed = speed;
         //WIP: "glitch" filter, use negative
     };
@@ -180,8 +201,6 @@ class HUD {
     }
 
     render() {
-        ctx.fillStyle = 'white';
-        ctx.fillRect(0,0, 101,40);
         ctx.fillStyle = 'black';
         ctx.font = '20pt sans-serif';
         ctx.fillText(pad(this.score,6), 2,40);
@@ -224,8 +243,13 @@ function spawnGem() {
         GEMS[Math.floor(Math.random()*3)]);
 }
 
+function showCharacterSelect() {
+    currentState = GAME_STATES.CHOOSING;
+    selector = new Selector(202, 120, IMG_SRC.SELECTOR);
+}
+
 function startGame(playerSprite) {
-    state = 'playing';
+    currentState = GAME_STATES.PLAYING;
     spawnPlayer(playerSprite);
     enemySpawner = setInterval(spawnEnemy,1400);
     spawnGem();
@@ -295,11 +319,11 @@ document.addEventListener('keyup', function(e) {
         39: 'right',
         40: 'down'
     };
-    if(state === 'choose')
+    if(currentState === GAME_STATES.CHOOSING)
         selector.handleInput(allowedKeys[e.keyCode]);
-    else if(state === 'playing')
+    else if(currentState === GAME_STATES.PLAYING)
         player.handleInput(allowedKeys[e.keyCode]);
     else
-        console.error('Unknown game state', state);
+        console.error('Unknown game state', currentState);
 
 });

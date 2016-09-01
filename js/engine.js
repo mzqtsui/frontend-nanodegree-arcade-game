@@ -49,12 +49,11 @@ var Engine = (function(global) {
          * our update function since it may be used for smooth animation.
          */
 
-        if(state === 'playing'){
+        if(currentState === GAME_STATES.PLAYING){
             update(dt);
             render();
 
-        }
-        else if(state === 'choose'){
+        } else if(currentState === GAME_STATES.CHOOSING){
             selector.render();
         }
 
@@ -67,9 +66,6 @@ var Engine = (function(global) {
          * function again as soon as the browser is able to draw another frame.
          */
         win.requestAnimationFrame(main);
-
-
-
     }
 
     /* This function does some initial setup that should only occur once,
@@ -79,8 +75,7 @@ var Engine = (function(global) {
     function init() {
         reset();
         lastTime = Date.now();
-        state = 'choose';
-        selector = new Selector(202, 120, 'images/Selector.png');
+        showCharacterSelect();
         main();
     }
 
@@ -129,12 +124,12 @@ var Engine = (function(global) {
          * for that particular row of the game level.
          */
         var rowImages = [
-                'images/water-block.png',   // Top row is water
-                'images/stone-block.png',   // Row 1 of 3 of stone
-                'images/stone-block.png',   // Row 2 of 3 of stone
-                'images/stone-block.png',   // Row 3 of 3 of stone
-                'images/grass-block.png',   // Row 1 of 2 of grass
-                'images/grass-block.png'    // Row 2 of 2 of grass
+                IMG_SRC.BLOCK_WATER,   // Top row is water
+                IMG_SRC.BLOCK_STONE,   // Row 1 of 3 of stone
+                IMG_SRC.BLOCK_STONE,   // Row 2 of 3 of stone
+                IMG_SRC.BLOCK_STONE,   // Row 3 of 3 of stone
+                IMG_SRC.BLOCK_GRASS,   // Row 1 of 2 of grass
+                IMG_SRC.BLOCK_GRASS    // Row 2 of 2 of grass
             ],
             numRows = 6,
             numCols = 5,
@@ -191,19 +186,19 @@ var Engine = (function(global) {
      * all of these images are properly loaded our game will start.
      */
     Resources.load([
-        'images/stone-block.png',
-        'images/water-block.png',
-        'images/grass-block.png',
-        'images/gem-green.png',
-        'images/gem-blue.png',
-        'images/gem-orange.png',
-        'images/enemy-bug.png',
-        'images/char-boy.png',
-        'images/char-princess-girl.png',
-        'images/char-cat-girl.png',
-        'images/char-horn-girl.png',
-        'images/char-pink-girl.png',
-        'images/Selector.png'
+        IMG_SRC.BLOCK_STONE,
+        IMG_SRC.BLOCK_WATER,
+        IMG_SRC.BLOCK_GRASS,
+        IMG_SRC.GEM_GREEN,
+        IMG_SRC.GEM_BLUE,
+        IMG_SRC.GEM_ORANGE,
+        IMG_SRC.ENEMY_BUG,
+        IMG_SRC.CHAR_BOY,
+        IMG_SRC.CHAR_PRINCESS,
+        IMG_SRC.CHAR_CAT_GIRL,
+        IMG_SRC.CHAR_HORN_GIRL,
+        IMG_SRC.CHAR_PINK_GIRL,
+        IMG_SRC.SELECTOR
     ]);
     Resources.onReady(init);
 
