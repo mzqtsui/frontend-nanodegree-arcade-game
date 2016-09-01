@@ -20,7 +20,7 @@ const PLAYER_SPAWN = {
     y: 405
 };
 
-const MAX_ENEMIES = 4;
+const MAX_ENEMIES = 5;
 
 const MAX_HEALTH = 3;
 
@@ -104,7 +104,7 @@ class Renderable {
 
     // Draw the enemy on the screen, required method for game
     render() {
-        if(DRAW_HITBOXES)
+        if(DRAW_HITBOXES && this.hitbox)
             ctx.strokeRect(this.hitbox[0]+this.x, this.hitbox[1]+this.y, this.hitbox[2], this.hitbox[3]);
 
         ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
@@ -131,9 +131,6 @@ class Renderable {
     }
 }
 
-
-//
-
 /**
 * @description Enemies our player must avoid
 * @constructor
@@ -148,9 +145,8 @@ class Enemy extends Renderable {
 
         // The image/sprite for our enemies, this uses
         // a helper we've provided to easily load images
-        super(x, y, IMG_SRC.ENEMY_BUG, [0, 80, 95,60]); //TODO: hitboxes too big
+        super(x, y, IMG_SRC.ENEMY_BUG, [10, 80, 70,60]);
         this.speed = speed;
-        //TODO: "glitch" filter, use negative, eats gems
     };
 
     // Update the enemy's position, required method for game
@@ -168,20 +164,35 @@ class Enemy extends Renderable {
     }
 }
 
-// Now write your own player class
-// This class requires an update(), render() and
-// a handleInput() method.
+/**
+* @description Our playable hero
+* @constructor
+* @param {string} sprite - url path of image sprite
+*/
 class Player extends Renderable {
     constructor(sprite) {
-        super(PLAYER_SPAWN.x, PLAYER_SPAWN.y, sprite, [20, 65, 62,70]);
+        super(PLAYER_SPAWN.x, PLAYER_SPAWN.y, sprite, [27, 65, 50,70]);
         this.speed = {
             x: TILE_WIDTH,
             y: TILE_HEIGHT
         };
+        this.isHit = false;
     }
 
     update() {
 
+    }
+
+    render() {
+        if(this.isHit) {
+            ctx.save();
+            ctx.translate(this.x+TILE_WIDTH+20, this.y+10);
+            ctx.rotate(1);
+            ctx.drawImage(Resources.get(this.sprite), 0,0);
+            ctx.restore();
+        } else {
+            super.render();
+        }
     }
 
     handleInput(dir) {
@@ -216,9 +227,17 @@ class Player extends Renderable {
         }
     }
 
+    takeDamage() {
+        this.isHit = true;
+        this.collisions = false;
+        setTimeout(() => { this.respawn(); }, 1000);
+    }
+
     respawn() {
         this.x = PLAYER_SPAWN.x;
         this.y = PLAYER_SPAWN.y;
+        this.isHit = false;
+        this.collisions = true;
     }
 }
 
@@ -273,9 +292,9 @@ class HUD {
 
         if(currentState === GAME_STATES.GAME_OVER) {
             ctx.save();
-            ctx.globalAlpha = 0.6;
+            ctx.globalAlpha = 0.7;
             ctx.fillRect(30,180, ctx.canvas.width-60, 140);
-            ctx.globalAlpha = 0.8;
+            ctx.globalAlpha = 1;
             ctx.font = "50pt sans-serif";
             ctx.textAlign = "center";
             ctx.fillStyle = "white";

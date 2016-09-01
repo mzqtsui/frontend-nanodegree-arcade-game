@@ -112,7 +112,7 @@ var Engine = (function(global) {
 
             if(enemy.checkCollision(player)) {
                 hud.changeHealth(-1);
-                player.respawn();
+                player.takeDamage();
             }
         });
 
