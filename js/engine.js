@@ -106,6 +106,11 @@ var Engine = (function(global) {
         allEnemies.forEach(function(enemy) {
             if(enemy.update(dt) > LIMITS.x)
                 enemy.reset();
+
+            if(enemy.checkCollision(player)) {
+                hud.changeHealth(-1);
+                player.respawn();
+            }
         });
 
         player.update();
@@ -131,16 +136,14 @@ var Engine = (function(global) {
                 IMG_SRC.BLOCK_GRASS,   // Row 1 of 2 of grass
                 IMG_SRC.BLOCK_GRASS    // Row 2 of 2 of grass
             ],
-            numRows = 6,
-            numCols = 5,
             row, col;
 
         /* Loop through the number of rows and columns we've defined above
          * and, using the rowImages array, draw the correct image for that
          * portion of the "grid"
          */
-        for (row = 0; row < numRows; row++) {
-            for (col = 0; col < numCols; col++) {
+        for (row = 0; row < NUM_ROWS; row++) {
+            for (col = 0; col < NUM_COLS; col++) {
                 /* The drawImage function of the canvas' context element
                  * requires 3 parameters: the image to draw, the x coordinate
                  * to start drawing and the y coordinate to start drawing.
@@ -198,7 +201,8 @@ var Engine = (function(global) {
         IMG_SRC.CHAR_CAT_GIRL,
         IMG_SRC.CHAR_HORN_GIRL,
         IMG_SRC.CHAR_PINK_GIRL,
-        IMG_SRC.SELECTOR
+        IMG_SRC.SELECTOR,
+        IMG_SRC.HEART
     ]);
     Resources.onReady(init);
 
