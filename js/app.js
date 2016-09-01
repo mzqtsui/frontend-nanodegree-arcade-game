@@ -65,7 +65,8 @@ const PLAYER_SPRITES = [
 
 const GAME_STATES = {
     CHOOSING: 0,
-    PLAYING:  1
+    PLAYING:  1,
+    GAME_OVER: 2
 };
 
 /**
@@ -131,7 +132,15 @@ class Renderable {
 }
 
 
-// Enemies our player must avoid
+//
+
+/**
+* @description Enemies our player must avoid
+* @constructor
+* @param {number} x - x coordinate of object
+* @param {number} y - y coordinate of object
+* @param {number} speed - movement speed
+*/
 class Enemy extends Renderable {
     constructor(x, y, speed) {
         // Variables applied to each of our instances go here,
@@ -139,9 +148,9 @@ class Enemy extends Renderable {
 
         // The image/sprite for our enemies, this uses
         // a helper we've provided to easily load images
-        super(x, y, IMG_SRC.ENEMY_BUG, [0, 80, 95,60]);
+        super(x, y, IMG_SRC.ENEMY_BUG, [0, 80, 95,60]); //TODO: hitboxes too big
         this.speed = speed;
-        //WIP: "glitch" filter, use negative
+        //TODO: "glitch" filter, use negative, eats gems
     };
 
     // Update the enemy's position, required method for game
@@ -249,7 +258,8 @@ class HUD {
     }
 
     update() {
-
+        if(this.health === 0)
+            currentState = GAME_STATES.GAME_OVER;
     }
 
     render() {
@@ -259,6 +269,20 @@ class HUD {
 
         for(let i = 0; i < this.health; i++) {
             ctx.drawImage(Resources.get(IMG_SRC.HEART), 410+30*i, 18);
+        }
+
+        if(currentState === GAME_STATES.GAME_OVER) {
+            ctx.save();
+            ctx.globalAlpha = 0.6;
+            ctx.fillRect(30,180, ctx.canvas.width-60, 140);
+            ctx.globalAlpha = 0.8;
+            ctx.font = "50pt sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillStyle = "white";
+            ctx.fillText("GAME OVER", ctx.canvas.width/2, 250);
+            ctx.font = "14pt sans-serif";
+            ctx.fillText("Press any key to try again", ctx.canvas.width/2, 290);
+            ctx.restore();
         }
     }
 }
@@ -371,8 +395,13 @@ document.addEventListener('keyup', function(e) {
     };
     if(currentState === GAME_STATES.CHOOSING)
         selector.handleInput(allowedKeys[e.keyCode]);
+
     else if(currentState === GAME_STATES.PLAYING)
         player.handleInput(allowedKeys[e.keyCode]);
+
+    else if(currentState === GAME_STATES.GAME_OVER)
+        showCharacterSelect();
+
     else
         console.error('Unknown game state', currentState);
 

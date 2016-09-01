@@ -49,12 +49,15 @@ var Engine = (function(global) {
          * our update function since it may be used for smooth animation.
          */
 
-        if(currentState === GAME_STATES.PLAYING){
+        if(currentState === GAME_STATES.PLAYING) {
             update(dt);
             render();
 
-        } else if(currentState === GAME_STATES.CHOOSING){
+        }else if(currentState === GAME_STATES.CHOOSING) {
             selector.render();
+
+        }else if(currentState === GAME_STATES.GAME_OVER) {
+
         }
 
         /* Set our lastTime variable which is used to determine the time delta
