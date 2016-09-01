@@ -27,10 +27,18 @@ const IMG_SRC = {
 };
 
 const GEMS = [
-    {sprite: IMG_SRC.GEM_GREEN, value: 10},
-    {sprite: IMG_SRC.GEM_BLUE, value: 50},
+    {sprite: IMG_SRC.GEM_GREEN,  value: 10},
+    {sprite: IMG_SRC.GEM_BLUE,   value: 50},
     {sprite: IMG_SRC.GEM_ORANGE, value: 100},
 ];
+
+const KEYS = {
+    UP:     0,
+    RIGHT:  1,
+    LEFT:   2,
+    DOWN:   3,
+    ENTER:  4
+};
 
 const PLAYER_SPRITES = [
     IMG_SRC.CHAR_BOY,
@@ -42,7 +50,7 @@ const PLAYER_SPRITES = [
 
 const GAME_STATES = {
     CHOOSING: 0,
-    PLAYING: 1
+    PLAYING:  1
 };
 var currentState;
 
@@ -133,25 +141,25 @@ class Player extends Renderable {
 
     handleInput(dir) {
         switch(dir) {
-            case 'left':
+            case KEYS.LEFT:
                 this.x -= this.speed.x;
                 if(this.x < 0)
                     this.x = 0;
                 break;
 
-            case 'up':
+            case KEYS.UP:
                 this.y -= this.speed.y;
                 if(this.y < -10)
                     this.y = -10;
                 break;
 
-            case 'right':
+            case KEYS.RIGHT:
                 this.x += this.speed.x;
                 if(this.x > LIMITS.x - TILE_WIDTH)
                     this.x = LIMITS.x - TILE_WIDTH;
                 break;
 
-            case 'down':
+            case KEYS.DOWN:
                 this.y += this.speed.y;
                 if(this.y > LIMITS.y - 200)
                     this.y = LIMITS.y - 200;
@@ -279,7 +287,7 @@ class Selector extends Renderable{
 
     handleInput(dir) {
         switch(dir) {
-            case 'left':
+            case KEYS.LEFT:
                 this.chosen--;
                 this.x -= TILE_WIDTH;
                 if(this.chosen < 0){
@@ -288,7 +296,7 @@ class Selector extends Renderable{
                 }
                 break;
 
-            case 'right':
+            case KEYS.RIGHT:
                 this.chosen++;
                 this.x += TILE_WIDTH;
                 if(this.chosen >= PLAYER_SPRITES.length){
@@ -297,7 +305,7 @@ class Selector extends Renderable{
                 }
                 break;
 
-            case 'enter':
+            case KEYS.ENTER:
                 startGame(PLAYER_SPRITES[this.chosen]);
                 break;
 
@@ -313,11 +321,11 @@ class Selector extends Renderable{
 // Player.handleInput() method. You don't need to modify this.
 document.addEventListener('keyup', function(e) {
     var allowedKeys = {
-        13: 'enter',
-        37: 'left',
-        38: 'up',
-        39: 'right',
-        40: 'down'
+        13: KEYS.ENTER,
+        37: KEYS.LEFT,
+        38: KEYS.UP,
+        39: KEYS.RIGHT,
+        40: KEYS.DOWN
     };
     if(currentState === GAME_STATES.CHOOSING)
         selector.handleInput(allowedKeys[e.keyCode]);
