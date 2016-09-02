@@ -194,6 +194,9 @@ class Player extends Renderable {
     }
 
     handleInput(dir) {
+        if(this.isHit)
+            return;
+
         switch(dir) {
             case KEYS.LEFT:
                 this.x -= this.speed.x;
